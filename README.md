@@ -1,2 +1,3 @@
 # usaco
-My code of usaco
+My solutions to usaco problems
+@kevin5396
