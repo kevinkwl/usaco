@@ -1,2 +1,2 @@
 # usaco
-My implmentation of usaco
+My code of usaco
