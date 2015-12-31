@@ -35,9 +35,9 @@ void make_set(int n)
 
 int find_set(int n)
 {
-    while (n != p[n])
-        n = p[n];
-    return n;
+    if (n != p[n])
+        p[n] = find_set(p[n]);
+    return p[n];
 }
 void union_set(int i, int j)
 {
