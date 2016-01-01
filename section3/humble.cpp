@@ -20,9 +20,9 @@ void solve()
     p = 1;
     for (int i = 1; i <= N; ++i)
     {
-        m = *(--hum.end());   
         for (int j = 1; j <= K; ++j)
         {
+            m = *(--hum.end());   
             if (hum.size() > N + 1 && p*prime[j] > m)
                 break;
             hum.insert(p*prime[j]);
