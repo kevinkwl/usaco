@@ -6,10 +6,27 @@ LANG: C++11
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <algorithm>
 using namespace std;
 string ori = "Begin the Escape execution at the Break of Dawn";
 string crypted;
 int can,times;
+bool used[99992];
+int elfhash(string & s)
+{
+    unsigned long h = 0,x=0;
+    for (auto c : s)
+    {
+        h = (h<<4)+(c++);
+        if ((x=h & 0xf0000000L) != 0)
+        {
+            h ^= (x>>24);
+            h &=~x;
+        }
+    }
+    return h%99991;
+}
+
 
 bool decrypt(string cur, int step, int depth)
 {
@@ -22,6 +39,7 @@ bool decrypt(string cur, int step, int depth)
     }
     if (cur.size() <= ori.size())
         return false;
+
     int pc[80],po[80],pw[80];
     int nc=0,no=0,nw=0;
     for (int i = 0; i < cur.size(); ++i)
@@ -33,6 +51,34 @@ bool decrypt(string cur, int step, int depth)
         }
     if (nc == 0 || no == 0 || nw == 0)
         return false;
+    if (cur.substr(0, pc[0]) != ori.substr(0,pc[0]))
+        return false;
+    int n = cur.size()-pw[nw-1]-1;
+    if (cur.substr(pw[nw-1]+1,n)
+            != ori.substr(ori.size()-n,n))
+            return false;
+    if (nc > 1)
+    {
+        int cnt = 0;
+        int pre = pc[0];
+        for (int i = pc[0]+1; i < cur.size(); ++i)
+        {
+            if (cur[i] == 'C' || cur[i] == 'O' || cur[i] == 'W')
+                ++cnt;
+            if (cnt == 1)
+            {
+                string test = cur.substr(pre+1,i-pre-1);
+                if (test.size() > 0)
+                    if (ori.find(test) == string::npos)
+                        return false;
+                cnt = 0;
+                pre = i;
+            }
+        }
+    }
+    if (used[elfhash(cur)])
+        return false;
+    used[elfhash(cur)] = 1;
     string next;
     for (int c = 0; c < nc; ++c)
         for (int o = 0; o < no; ++o)

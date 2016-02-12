@@ -213,5 +213,7 @@ int main()
         }
         fout << endl;
     }
+    if (m == 0)
+        fout << "None" << endl;
     fout.close();
 }
