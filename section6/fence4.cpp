@@ -58,14 +58,19 @@ bool Valid()
 }
 void Next(int &x, int &y, Line &L)
 {
-    x += 2 * cos(L.ang) + 0.5;
-    y += 2 * sin(L.ang) + 0.5;
+    double dx = 2 * cos(L.ang);
+    double dy = 2 * sin(L.ang);
+    dx += (dx > 0) ? 0.5:0;
+    dy += (dy > 0) ? 0.5:0;
+    x += dx;
+    y += dy;
 }
 bool check(Point &p, Point& end, int comp)
 {
     switch (comp)
     {
-        case 0: return p.y <= end.y;
+        case -1: return p.y <= end.y && p.x >= end.x;
+        case 0: return p.y <= end.y && p.x <= end.x;
         case 1: return p.x <= end.x;
         case 2: return p.x >= end.x;
         case 3: return p.y >= end.y;
@@ -82,8 +87,12 @@ void see()
     testLine.p1.y = obs.y;
     for (int i = 1; i <= N; ++i)
     {
-        if (line[i].p1.y < line[i].p2.y)     // <= p2.y
-            comp = 0;
+        if (line[i].p1.y < line[i].p2.y)
+            if (line[i].p1.x < line[i].p2.x)     // <= p2.y <= p2.x
+                comp = 0;
+            else                        // >= p2.x
+                comp = -1;
+
         else if (line[i].p1.y == line[i].p2.y)
             if (line[i].p1.x < line[i].p2.x)  // <= p2.x
                 comp = 1;
@@ -97,10 +106,6 @@ void see()
 
         while (check(curPoint, line[i].p2, comp))
         {
-            if (i == 100000)
-            {
-                cout << curPoint.x/100 << ' ' << curPoint.y/100 << endl;
-            }
             flag = false;
             testLine.p2.x = curPoint.x;
             testLine.p2.y = curPoint.y;
